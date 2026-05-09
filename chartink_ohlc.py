@@ -37,10 +37,10 @@ headers = {
 }
 
 # line 5
-start_date = "2025-01-01"
+start_date = "2026-05-01"
 
 # line 6
-end_date = "2025-01-10"
+end_date = "2026-05-08"
 
 # line 7
 timeframe_minutes = 30
@@ -159,14 +159,14 @@ end_datetime = pd.to_datetime(
 )
 
 # line 127
-df["Datetime"] = pd.date_range(
-# line 128
-    end=end_datetime,
-# line 129
-    periods=len(df),
-# line 130
-    freq="30min"
-# line 131
+df["Datetime"] = (
+    pd.date_range(
+        end=end_datetime,
+        periods=len(df),
+        freq="30min"
+    )
+    .tz_localize("UTC")
+    .tz_convert("Asia/Kolkata")
 )
 
 # line 133
