@@ -1,17 +1,15 @@
 # filename: C:\Users\Arpit\Desktop\NSE_DATA\app\services\NSE_Charting.py
 
-# line 1
+
 import requests
 
-# line 2
+
 import pandas as pd
 
 
-# line 5
 session = requests.Session()
 
 
-# line 8
 HEADERS = {
     "User-Agent": (
         "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
@@ -24,14 +22,14 @@ HEADERS = {
 }
 
 
-# line 20
+
 session.get(
     "https://charting.nseindia.com/",
     headers=HEADERS
 )
 
 
-# line 26
+
 def get_ohlc(
     token: int,
     symbol: str,
@@ -42,7 +40,6 @@ def get_ohlc(
     symbol_type: str = "Equity"
 ) -> pd.DataFrame:
 
-    # line 36
     nse_url = (
         "https://charting.nseindia.com/v1/charts/"
         "symbolHistoricalData"
@@ -56,21 +53,21 @@ def get_ohlc(
     )
 
     print(nse_url)
-    # line 49
+
     response = session.get(
         nse_url,
         headers=HEADERS
     )
 
 
-    # line 55
+  
     if response.status_code != 200:
         raise Exception(
             f"NSE request failed: {response.status_code}"
         )
 
 
-    # line 62
+
     data = response.json()
 
 
@@ -83,8 +80,7 @@ def get_ohlc(
 
     df = pd.DataFrame(data["data"])
 
-    
-    # line 73
+
     df.rename(
         columns={
             "time": "Datetime",
@@ -98,14 +94,14 @@ def get_ohlc(
     )
 
 
-    # line 87
+
     df["Datetime"] = pd.to_datetime(
         df["Datetime"],
         unit="ms"
     )
 
 
-    # line 93
+
     df = df[
         [
             "Datetime",
@@ -118,7 +114,7 @@ def get_ohlc(
     ]
 
 
-    # line 105
+  
     return df
 
 get_ohlc(4963,"ICICIBANK-EQ",1746075900,1746698400,1,"D","Equity")

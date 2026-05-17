@@ -6,6 +6,8 @@ import json
 import re
 from datetime import datetime
 from app.services.NSE_Charting import get_ohlc
+from Credentials.credentials import creds
+from app.services.market_postgres import save_ohlc_data
 
 app = FastAPI()
 '''
@@ -49,7 +51,7 @@ class UserInput(BaseModel):
     from_date : Optional[datetime] = None
     to_date : Annotated[datetime,Field(...,description='Pydantic validates ISO 8601 strings (e.g., "2026-05-10")')]                      
     symbol_type: Literal["Equity","Futures","Options"]
-    chart_type : Annotated[Literal["I","D","W","M"],Field(...,description='Intraday,Daily,Weekly')]
+    chart_type : Annotated[Literal["I","D","W","M"],Field(...,description='Intraday,Daily,Weekly,Monthly')]
     time_interval : Annotated[Literal[1,5,15,30,60],Field(description='timeinterval of candles')]
     
     
@@ -83,7 +85,13 @@ def stock_data(data: UserInput):
             chart_type=data.chart_type,
             symbol_type=data.symbol_type
         )
-
+        save_ohlc_data(
+            df,
+            token=data.token,
+            symbol= data.trade_name,
+            timeframe=f'{data.time_interval}{data.chart_type}'
+        )
+        
         return df.to_dict(
             orient="records"
         )
@@ -170,3 +178,4 @@ def search_sort(symbol_name: str = Query(...,description='Search similar traded 
     return {'Total_match': len(matched_data),
         "results": matched_data
     }
+    
