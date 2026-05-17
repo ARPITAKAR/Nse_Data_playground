@@ -5,8 +5,12 @@ __pycache__/
 .env
 # Virtual environment
 hoopers/
+# Credentials
 credentials.py
 Credentials/
+
+# Videos
+*.mp4
 # C extensions
 *.so
 
